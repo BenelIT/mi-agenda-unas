@@ -1,15 +1,17 @@
+// src/app/(main)/layout.tsx
+
 "use client";
 
 import Link from "next/link";
-import { CalendarDays, PlusCircle, User } from "lucide-react";
+import { CalendarDays, PlusCircle } from "lucide-react";
 
 const brandColor = "#f4b2b7";
 
 export default function MainLayout({ children }: { children: React.ReactNode }) {
   return (
     <div className="flex flex-col min-h-screen">
-      {/* Contenido principal */}
-      <div className="flex-1">{children}</div>
+      {/* Contenido principal con espacio para el nav */}
+      <div className="flex-1 pb-20">{children}</div>
 
       {/* Barra de navegación inferior */}
       <nav className="fixed bottom-0 left-0 w-full bg-white border-t border-gray-200 flex justify-around py-2 shadow-lg rounded-t-2xl">

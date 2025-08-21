@@ -19,6 +19,15 @@ export default function AgendarPage() {
   const [loading, setLoading] = useState(false);
   const [mensaje, setMensaje] = useState<string | null>(null);
 
+  // 🔒 Rango bloqueado
+  const year = new Date().getFullYear();
+  const inicioBloqueo = new Date(year, 7, 21); // 21 agosto
+  const finBloqueo = new Date(year, 8, 10);    // 10 septiembre
+
+  const esBloqueada = (date: Date) => {
+    return date >= inicioBloqueo && date <= finBloqueo;
+  };
+
   const handleAgendar = async () => {
     if (!fecha || !hora) return;
 
@@ -26,10 +35,7 @@ export default function AgendarPage() {
     setMensaje(null);
 
     try {
-      // ⚡ Ajusta el usuario_texto_id según tu lógica
       const usuario_texto_id = 1;
-
-      // Convertir fecha a formato YYYY-MM-DD
       const fechaISO = fecha.toISOString().split("T")[0];
 
       const res = await fetch("https://backend-simple-7fdv.onrender.com/agenda", {
@@ -57,7 +63,7 @@ export default function AgendarPage() {
   };
 
   return (
-    <main className="max-w-md mx-auto bg-white rounded-xl shadow-md p-6">
+    <main className="max-w-md mx-auto bg-white rounded-xl shadow-md p-6 overflow-y-auto">
       {/* Header */}
       <header className="mb-6">
         <div className="flex justify-start">
@@ -92,6 +98,22 @@ export default function AgendarPage() {
             locale="es-MX"
             className="rounded-lg border"
             calendarType="gregory"
+            tileDisabled={({ date, view }) => view === "month" && esBloqueada(date)}
+            tileClassName={({ date, view }) => {
+              if (view !== "month") return "";
+
+              // Bloqueadas -> números rojos
+              if (esBloqueada(date)) {
+                return "text-red-600 font-semibold cursor-not-allowed";
+              }
+
+              // Seleccionada -> número verde
+              if (fecha && date.toDateString() === fecha.toDateString()) {
+                return "text-green-600 font-bold";
+              }
+
+              return "";
+            }}
           />
         </div>
       </section>
